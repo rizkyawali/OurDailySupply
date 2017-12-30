@@ -81,7 +81,7 @@
                     <h1>Our Daily Supply | All Products</h1>
 
                     <br>
-                    <?= anchor('admin/products/create','<i class="fa fa-plus" aria-hidden="true"></i> Add New Product', ['class' => 'btn btn-primary btn-lg']) ?>
+                    <?= anchor('admin/productscontroller/create','<i class="fa fa-plus" aria-hidden="true"></i> Add New Product', ['class' => 'btn btn-primary btn-lg']) ?>
                     <br><br>
 
                     <table class="table table-hover table-bordered" id="myTable">
@@ -105,8 +105,11 @@
                                 <td class="text-center"><?= $product->price ?></td>
                                 <td class="text-center"><?= $product->stock ?></td>
                                 <td class="text-center">
-                                    <?= anchor('admin/products/update'. $product->product_id ,'<i class="fa fa-pencil" aria-hidden="true"></i> Edit', ['class' => 'btn btn-info btn-sm']) ?>
-                                    <?= anchor('admin/products/delete'. $product->product_id ,'<i class="fa fa-trash-o" aria-hidden="true"></i> Delete', ['class' => 'btn btn-danger btn-sm']) ?>
+                                    <?= anchor('admin/productscontroller/update/'. $product->product_id ,'<i class="fa fa-pencil" aria-hidden="true"></i> Edit', ['class' => 'btn btn-info btn-sm']) ?>
+                                    <?= anchor('admin/productscontroller/delete/'. $product->product_id ,
+                                                                                   '<i class="fa fa-trash-o" aria-hidden="true"></i> Delete',
+                                                                                    ['class' => 'btn btn-danger btn-sm',
+                                                                                    'onclick' => 'return confirm(\' Are You Sure Want Delete This Data ? \')']) ?>
                                 </td>
                             </tr>
 
