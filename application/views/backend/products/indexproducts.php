@@ -89,7 +89,7 @@
                         <tr>
                             <th scope="col" class="text-center">#</th>
                             <th scope="col" class="text-center">Product Name</th>
-                            <th scope="col" class="text-center">Description</th>
+                            <th scope="col" class="text-center">Product Image</th>
                             <th scope="col" class="text-center">Price</th>
                             <th scope="col" class="text-center">Stock</th>
                             <th class="text-center">Action</th>
@@ -101,7 +101,12 @@
                             <tr>
                                 <th class="text-center"><?= $product->product_id ?></th>
                                 <td class="text-center"><?= $product->product_name ?></td>
-                                <td class="text-center"><?= $product->description ?></td>
+                                <td class="text-center"><?php
+                                                            $product_image = [ 'src' => 'assets/images/upload/products/'. $product->image,
+                                                                                'width' => '30%'];
+                                                            echo img($product_image);
+                                                        ?>
+                                </td>
                                 <td class="text-center"><?= $product->price ?></td>
                                 <td class="text-center"><?= $product->stock ?></td>
                                 <td class="text-center">

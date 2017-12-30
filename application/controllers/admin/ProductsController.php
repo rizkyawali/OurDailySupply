@@ -25,6 +25,7 @@ class ProductsController extends CI_Controller
         $this->form_validation->set_rules('description', 'Description', 'required');
         $this->form_validation->set_rules('price', 'Price', 'required|integer');
         $this->form_validation->set_rules('stock', 'Available Stock', 'required|integer');
+        // $this->form_validation->set_rules('userfile', 'Image', 'required');
 
         /*Execute Add New Data*/
         if ($this->form_validation->run() == FALSE)
@@ -33,14 +34,37 @@ class ProductsController extends CI_Controller
         }
         else
         {
-            $data_products = array('product_name' => set_value('product_name'),
-                                   'description' => set_value('description'),
-                                   'price' => set_value('price'),
-                                   'stock' => set_value('stock')
-                                  );
+            /*Image Upload Library*/
+            $config['upload_path'] = './assets/images/upload/products/';
+            $config['allowed_types'] = 'jpg|png';
+            $config['max_size'] = '5'; /*MB*/
+            $config['max_width'] = '1024';
+            $config['max_height'] = '768';
 
-            $this->products->create($data_products);
-            redirect('admin/ProductsController');
+            $this->load->library('upload', $config);
+
+            if (! $this->upload->do_upload())
+            {
+                $this->load->view('backend/products/create_product.php');
+            }
+            else
+            {
+                /*Execute Image Upload*/
+
+                /*Insert Data To Database*/
+                $img = $this->upload->data();
+                $data_products = array('product_name' => set_value('product_name'),
+                    'description' => set_value('description'),
+                    'price' => set_value('price'),
+                    'stock' => set_value('stock'),
+                    'image' => $img['file_name']
+                );
+
+                $this->products->create($data_products);
+                redirect('admin/ProductsController');
+            }
+
+
         }
     }
 
@@ -59,14 +83,48 @@ class ProductsController extends CI_Controller
         }
         else
         {
-            $data_products = array('product_name' => set_value('product_name'),
-                'description' => set_value('description'),
-                'price' => set_value('price'),
-                'stock' => set_value('stock')
-            );
+            /*Updating Data With Image*/
+            if ($_FILES['userfile']['name'] != '') {
+                /*Image Upload Library*/
+                $config['upload_path'] = './assets/images/upload/products/';
+                $config['allowed_types'] = 'jpg|png';
+                $config['max_size'] = '5'; /*MB*/
+                $config['max_width'] = '1024';
+                $config['max_height'] = '768';
 
-            $this->products->update($id, $data_products);
-            redirect('admin/ProductsController');
+                $this->load->library('upload', $config);
+
+                if (!$this->upload->do_upload()) {
+                    $data['product'] = $this->products->find($id);
+                    $this->load->view('backend/products/update_product.php', $data);
+                } else {
+
+                    $img = $this->upload->data();
+                    $data_products = array('product_name' => set_value('product_name'),
+                        'description' => set_value('description'),
+                        'price' => set_value('price'),
+                        'stock' => set_value('stock'),
+                        'image' => $img['file_name']
+                    );
+
+                    $this->products->update($id, $data_products);
+                    redirect('admin/ProductsController');
+                }
+            }
+            else
+            {
+                /*Updating Data Without Uploading Image*/
+
+                $img = $this->upload->data();
+                $data_products = array('product_name' => set_value('product_name'),
+                    'description' => set_value('description'),
+                    'price' => set_value('price'),
+                    'stock' => set_value('stock')
+                );
+
+                $this->products->update($id, $data_products);
+                redirect('admin/ProductsController');
+            }
         }
 
     }
